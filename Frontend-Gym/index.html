@@ -1,0 +1,2044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdarshFitness - Premium Gym Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5D5CDE',
+                        'primary-dark': '#4A49B8',
+                        'gym-orange': '#FF6B35',
+                        'gym-blue': '#2E86AB',
+                        'gym-green': '#A23B72',
+                        'dark-bg': '#181818',
+                        'dark-card': '#2A2A2A',
+                        'dark-border': '#404040'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'bounce-soft': 'bounce 2s infinite',
+                        'pulse-slow': 'pulse 3s infinite'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .dark .glass-effect {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .loader {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #5D5CDE;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .sidebar-transition {
+            transition: transform 0.3s ease-in-out;
+        }
+        @media (max-width: 768px) {
+            .sidebar-hidden {
+                transform: translateX(-100%);
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-dark-bg text-gray-900 dark:text-white font-sans">
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="fixed inset-0 bg-white dark:bg-dark-bg flex items-center justify-center z-50">
+        <div class="text-center">
+            <div class="loader mx-auto mb-4"></div>
+            <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-300">Loading AdarshFitness...</h2>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="fixed left-0 top-0 h-full w-64 bg-white dark:bg-dark-card shadow-xl z-40 sidebar-transition">
+        <div class="p-6 border-b border-gray-200 dark:border-dark-border">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-gradient-to-r from-primary to-gym-orange rounded-lg flex items-center justify-center">
+                    <i class="fas fa-dumbbell text-white"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold">AdarshFitness</h1>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">Premium Gym</p>
+                </div>
+            </div>
+        </div>
+
+        <nav class="p-4 space-y-2">
+            <a href="#" onclick="showSection('dashboard')" class="nav-item flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-border transition-colors active">
+                <i class="fas fa-home w-5"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" onclick="showSection('classes')" class="nav-item flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-border transition-colors">
+                <i class="fas fa-calendar-alt w-5"></i>
+                <span>Classes</span>
+            </a>
+            <a href="#" onclick="showSection('trainers')" class="nav-item flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-border transition-colors">
+                <i class="fas fa-user-tie w-5"></i>
+                <span>Trainers</span>
+            </a>
+            <a href="#" onclick="showSection('equipment')" class="nav-item flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-border transition-colors">
+                <i class="fas fa-dumbbell w-5"></i>
+                <span>Equipment</span>
+            </a>
+            <a href="#" onclick="showSection('membership')" class="nav-item flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-border transition-colors">
+                <i class="fas fa-credit-card w-5"></i>
+                <span>Memberships</span>
+            </a>
+            <a href="#" onclick="showSection('nutrition')" class="nav-item flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-border transition-colors">
+                <i class="fas fa-apple-alt w-5"></i>
+                <span>Nutrition</span>
+            </a>
+            <a href="#" onclick="showSection('progress')" class="nav-item flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-border transition-colors">
+                <i class="fas fa-chart-line w-5"></i>
+                <span>Progress</span>
+            </a>
+            <a href="#" onclick="showSection('goals')" class="nav-item flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-border transition-colors">
+                <i class="fas fa-target w-5"></i>
+                <span>Goals</span>
+            </a>
+            <a href="#" onclick="showSection('profile')" class="nav-item flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-border transition-colors">
+                <i class="fas fa-user w-5"></i>
+                <span>Profile</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button id="mobileMenuBtn" class="fixed top-4 left-4 z-50 md:hidden bg-primary text-white p-3 rounded-lg shadow-lg">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Main Content -->
+    <div class="ml-0 md:ml-64 min-h-screen">
+        <!-- Header -->
+        <header class="bg-white dark:bg-dark-card shadow-sm border-b border-gray-200 dark:border-dark-border p-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <h2 id="pageTitle" class="text-2xl font-bold">Dashboard</h2>
+                    <div class="text-sm text-gray-500 dark:text-gray-400" id="currentTime"></div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- Search -->
+                    <div class="relative hidden md:block">
+                        <input type="text" id="globalSearch" placeholder="Search classes, trainers..." 
+                               class="pl-10 pr-4 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                        <div id="searchResults" class="absolute top-full left-0 right-0 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-lg shadow-lg mt-1 hidden z-50 max-h-64 overflow-y-auto"></div>
+                    </div>
+                    <!-- Notifications -->
+                    <button class="relative p-2 text-gray-600 dark:text-gray-300 hover:text-primary">
+                        <i class="fas fa-bell text-lg"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                    </button>
+                    <!-- Profile -->
+                    <div class="flex items-center space-x-3">
+                        <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face" 
+                             alt="Profile" class="w-8 h-8 rounded-full">
+                        <span class="hidden md:block font-medium">AdarshSekhar</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="p-4 md:p-6">
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="section">
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Workouts This Month</p>
+                                <p class="text-3xl font-bold text-primary">24</p>
+                            </div>
+                            <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-dumbbell text-primary"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <span class="text-green-500 text-sm">+15% from last month</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Calories Burned</p>
+                                <p class="text-3xl font-bold text-gym-orange">8,420</p>
+                            </div>
+                            <div class="w-12 h-12 bg-gym-orange/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-fire text-gym-orange"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <span class="text-green-500 text-sm">+8% from last month</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Active Streak</p>
+                                <p class="text-3xl font-bold text-gym-green">12 days</p>
+                            </div>
+                            <div class="w-12 h-12 bg-gym-green/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-calendar-check text-gym-green"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <span class="text-green-500 text-sm">Personal best!</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm text-gray-600 dark:text-gray-400">Next Goal</p>
+                                <p class="text-3xl font-bold text-gym-blue">85%</p>
+                            </div>
+                            <div class="w-12 h-12 bg-gym-blue/10 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-target text-gym-blue"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <span class="text-gray-500 text-sm">Weight loss goal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Today's Schedule -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <h3 class="text-lg font-semibold mb-4">Today's Schedule</h3>
+                        <div id="todaySchedule" class="space-y-3">
+                            <!-- Schedule items will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <h3 class="text-lg font-semibold mb-4">Quick Actions</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="showSection('classes')" class="p-4 bg-primary/10 hover:bg-primary/20 rounded-lg text-center transition-colors">
+                                <i class="fas fa-calendar-plus text-primary text-xl mb-2"></i>
+                                <p class="text-sm font-medium">Book Class</p>
+                            </button>
+                            <button onclick="showSection('trainers')" class="p-4 bg-gym-orange/10 hover:bg-gym-orange/20 rounded-lg text-center transition-colors">
+                                <i class="fas fa-user-plus text-gym-orange text-xl mb-2"></i>
+                                <p class="text-sm font-medium">Book Trainer</p>
+                            </button>
+                            <button onclick="showSection('equipment')" class="p-4 bg-gym-green/10 hover:bg-gym-green/20 rounded-lg text-center transition-colors">
+                                <i class="fas fa-dumbbell text-gym-green text-xl mb-2"></i>
+                                <p class="text-sm font-medium">Reserve Equipment</p>
+                            </button>
+                            <button onclick="showSection('nutrition')" class="p-4 bg-gym-blue/10 hover:bg-gym-blue/20 rounded-lg text-center transition-colors">
+                                <i class="fas fa-apple-alt text-gym-blue text-xl mb-2"></i>
+                                <p class="text-sm font-medium">Log Meal</p>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                    <h3 class="text-lg font-semibold mb-4">Recent Activity</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4 p-3 bg-gray-50 dark:bg-dark-bg rounded-lg">
+                            <div class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check text-green-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium">Completed HIIT Inferno class</p>
+                                <p class="text-sm text-gray-500">2 hours ago • Burned 420 calories</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4 p-3 bg-gray-50 dark:bg-dark-bg rounded-lg">
+                            <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                                <i class="fas fa-calendar text-blue-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium">Booked session with Sarah Adarshson</p>
+                                <p class="text-sm text-gray-500">Yesterday • Tomorrow at 3:00 PM</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4 p-3 bg-gray-50 dark:bg-dark-bg rounded-lg">
+                            <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
+                                <i class="fas fa-trophy text-purple-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="font-medium">Achieved 10-day workout streak</p>
+                                <p class="text-sm text-gray-500">2 days ago • New personal record!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Classes Section -->
+            <div id="classes-section" class="section hidden">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
+                    <h2 class="text-2xl font-bold">Fitness Classes</h2>
+                    <div class="flex flex-wrap items-center space-x-4">
+                        <select id="classFilter" class="px-4 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
+                            <option value="">All Difficulties</option>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                        <select id="timeFilter" class="px-4 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
+                            <option value="">All Times</option>
+                            <option value="morning">Morning</option>
+                            <option value="afternoon">Afternoon</option>
+                            <option value="evening">Evening</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="classesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Classes will be populated by JavaScript -->
+                </div>
+
+                <div id="classesLoading" class="flex justify-center items-center py-12">
+                    <div class="loader"></div>
+                </div>
+            </div>
+
+            <!-- Trainers Section -->
+            <div id="trainers-section" class="section hidden">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
+                    <h2 class="text-2xl font-bold">Personal Trainers</h2>
+                    <div class="flex flex-wrap items-center space-x-4">
+                        <select id="trainerSpecialtyFilter" class="px-4 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
+                            <option value="">All Specialties</option>
+                        </select>
+                        <label class="flex items-center space-x-2">
+                            <input type="checkbox" id="availableOnlyFilter" class="rounded">
+                            <span class="text-sm">Available only</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="trainersGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Trainers will be populated by JavaScript -->
+                </div>
+
+                <div id="trainersLoading" class="flex justify-center items-center py-12">
+                    <div class="loader"></div>
+                </div>
+            </div>
+
+            <!-- Equipment Section -->
+            <div id="equipment-section" class="section hidden">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
+                    <h2 class="text-2xl font-bold">Gym Equipment</h2>
+                    <div class="flex flex-wrap items-center space-x-4">
+                        <select id="equipmentCategoryFilter" class="px-4 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
+                            <option value="">All Categories</option>
+                            <option value="cardio">Cardio</option>
+                            <option value="strength">Strength</option>
+                            <option value="functional">Functional</option>
+                        </select>
+                        <select id="equipmentStatusFilter" class="px-4 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
+                            <option value="">All Status</option>
+                            <option value="Available">Available</option>
+                            <option value="In Use">In Use</option>
+                            <option value="Maintenance">Maintenance</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="equipmentGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Equipment will be populated by JavaScript -->
+                </div>
+
+                <div id="equipmentLoading" class="flex justify-center items-center py-12">
+                    <div class="loader"></div>
+                </div>
+            </div>
+
+            <!-- Membership Section -->
+            <div id="membership-section" class="section hidden">
+                <div class="mb-8 text-center">
+                    <h2 class="text-3xl font-bold mb-4">Choose Your Membership</h2>
+                    <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                        Join AdarshFitness and transform your body with our premium facilities and expert guidance
+                    </p>
+                </div>
+
+                <div id="membershipsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Memberships will be populated by JavaScript -->
+                </div>
+
+                <div id="membershipsLoading" class="flex justify-center items-center py-12">
+                    <div class="loader"></div>
+                </div>
+            </div>
+
+            <!-- Nutrition Section -->
+            <div id="nutrition-section" class="section hidden">
+                <h2 class="text-2xl font-bold mb-6">Nutrition Tracking</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Daily Stats -->
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <h3 class="text-lg font-semibold mb-4">Today's Nutrition</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600 dark:text-gray-400">Calories</span>
+                                <span class="font-semibold">1,420 / 2,000</span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-dark-border rounded-full h-2">
+                                <div class="bg-primary h-2 rounded-full" style="width: 71%"></div>
+                            </div>
+                            
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600 dark:text-gray-400">Protein</span>
+                                <span class="font-semibold">85g / 120g</span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-dark-border rounded-full h-2">
+                                <div class="bg-gym-orange h-2 rounded-full" style="width: 71%"></div>
+                            </div>
+                            
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600 dark:text-gray-400">Carbs</span>
+                                <span class="font-semibold">180g / 250g</span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-dark-border rounded-full h-2">
+                                <div class="bg-gym-green h-2 rounded-full" style="width: 72%"></div>
+                            </div>
+                            
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm text-gray-600 dark:text-gray-400">Fat</span>
+                                <span class="font-semibold">45g / 65g</span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-dark-border rounded-full h-2">
+                                <div class="bg-gym-blue h-2 rounded-full" style="width: 69%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Add Meal -->
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <h3 class="text-lg font-semibold mb-4">Quick Add Meal</h3>
+                        <form onsubmit="addMeal(event)">
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Meal Type</label>
+                                    <select id="mealType" class="w-full px-3 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
+                                        <option value="breakfast">Breakfast</option>
+                                        <option value="lunch">Lunch</option>
+                                        <option value="dinner">Dinner</option>
+                                        <option value="snack">Snack</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Food Item</label>
+                                    <input type="text" id="foodItem" placeholder="e.g., Grilled Chicken Salad" 
+                                           class="w-full px-3 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Calories</label>
+                                    <input type="number" id="calories" placeholder="e.g., 350" 
+                                           class="w-full px-3 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
+                                </div>
+                                <button type="submit" class="w-full bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-lg transition-colors">
+                                    Add Meal
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Water Intake -->
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <h3 class="text-lg font-semibold mb-4">Water Intake</h3>
+                        <div class="text-center">
+                            <div class="relative w-32 h-32 mx-auto mb-4">
+                                <svg class="w-32 h-32 transform -rotate-90">
+                                    <circle cx="64" cy="64" r="56" stroke="currentColor" stroke-width="8" fill="transparent" class="text-gray-200 dark:text-dark-border"/>
+                                    <circle cx="64" cy="64" r="56" stroke="currentColor" stroke-width="8" fill="transparent" stroke-dasharray="351.86" stroke-dashoffset="105.56" class="text-blue-500" stroke-linecap="round"/>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold">70%</div>
+                                        <div class="text-xs text-gray-500">2.1L / 3L</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button onclick="addWater()" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition-colors">
+                                <i class="fas fa-plus mr-2"></i>Add 250ml
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Meal Log -->
+                <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                    <h3 class="text-lg font-semibold mb-4">Today's Meals</h3>
+                    <div id="mealLog" class="space-y-4">
+                        <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-dark-bg rounded-lg">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-12 h-12 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-sun text-yellow-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium">Breakfast</h4>
+                                    <p class="text-sm text-gray-500">Oatmeal with berries</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-semibold">320 cal</p>
+                                <p class="text-sm text-gray-500">8:30 AM</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-dark-bg rounded-lg">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-leaf text-green-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium">Lunch</h4>
+                                    <p class="text-sm text-gray-500">Grilled chicken salad</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-semibold">450 cal</p>
+                                <p class="text-sm text-gray-500">1:15 PM</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-dark-bg rounded-lg">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-cookie-bite text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium">Snack</h4>
+                                    <p class="text-sm text-gray-500">Protein shake</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <p class="font-semibold">180 cal</p>
+                                <p class="text-sm text-gray-500">3:45 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Section -->
+            <div id="progress-section" class="section hidden">
+                <h2 class="text-2xl font-bold mb-6">Progress Tracking</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <!-- Weight Progress Chart -->
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <h3 class="text-lg font-semibold mb-4">Weight Progress</h3>
+                        <canvas id="weightChart" width="400" height="300"></canvas>
+                    </div>
+
+                    <!-- Workout Frequency Chart -->
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <h3 class="text-lg font-semibold mb-4">Weekly Workout Frequency</h3>
+                        <canvas id="workoutChart" width="400" height="300"></canvas>
+                    </div>
+                </div>
+
+                <!-- Progress Metrics -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <h3 class="text-lg font-semibold mb-4">Body Measurements</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">Weight</span>
+                                <span class="font-semibold">72.5 kg</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">Body Fat</span>
+                                <span class="font-semibold">15.2%</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">Muscle Mass</span>
+                                <span class="font-semibold">58.1 kg</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">BMI</span>
+                                <span class="font-semibold">22.1</span>
+                            </div>
+                        </div>
+                        <button onclick="showAddMeasurement()" class="w-full mt-4 bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-lg transition-colors">
+                            Add Measurement
+                        </button>
+                    </div>
+
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <h3 class="text-lg font-semibold mb-4">Personal Records</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">Bench Press</span>
+                                <span class="font-semibold">85 kg</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">Squat</span>
+                                <span class="font-semibold">110 kg</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">Deadlift</span>
+                                <span class="font-semibold">130 kg</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">5K Run</span>
+                                <span class="font-semibold">22:15</span>
+                            </div>
+                        </div>
+                        <button onclick="showAddRecord()" class="w-full mt-4 bg-gym-orange hover:bg-gym-orange/80 text-white py-2 px-4 rounded-lg transition-colors">
+                            Add Record
+                        </button>
+                    </div>
+
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <h3 class="text-lg font-semibold mb-4">This Month</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">Workouts</span>
+                                <span class="font-semibold">24</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">Total Time</span>
+                                <span class="font-semibold">36h 45m</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">Calories</span>
+                                <span class="font-semibold">8,420</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600 dark:text-gray-400">Avg/Workout</span>
+                                <span class="font-semibold">351 cal</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Photo Progress -->
+                <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                    <h3 class="text-lg font-semibold mb-4">Photo Progress</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="text-center">
+                            <div class="w-full h-32 bg-gray-200 dark:bg-dark-border rounded-lg mb-2 flex items-center justify-center">
+                                <i class="fas fa-camera text-gray-400 text-2xl"></i>
+                            </div>
+                            <p class="text-sm text-gray-500">Front - Week 1</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-32 bg-gray-200 dark:bg-dark-border rounded-lg mb-2 flex items-center justify-center">
+                                <i class="fas fa-camera text-gray-400 text-2xl"></i>
+                            </div>
+                            <p class="text-sm text-gray-500">Side - Week 1</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-32 bg-gray-200 dark:bg-dark-border rounded-lg mb-2 flex items-center justify-center">
+                                <i class="fas fa-camera text-gray-400 text-2xl"></i>
+                            </div>
+                            <p class="text-sm text-gray-500">Front - Week 4</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-full h-32 bg-gray-200 dark:bg-dark-border rounded-lg mb-2 flex items-center justify-center">
+                                <i class="fas fa-plus text-gray-400 text-2xl"></i>
+                            </div>
+                            <p class="text-sm text-gray-500">Add Photo</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Goals Section -->
+            <div id="goals-section" class="section hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">Fitness Goals</h2>
+                    <button onclick="showAddGoal()" class="bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-lg transition-colors">
+                        <i class="fas fa-plus mr-2"></i>Add Goal
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Active Goals -->
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold">Lose 5kg</h3>
+                            <span class="bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 px-2 py-1 rounded-full text-xs">In Progress</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Target weight: 70kg by March 15</p>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Progress</span>
+                                <span>60%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-dark-border rounded-full h-2">
+                                <div class="bg-primary h-2 rounded-full" style="width: 60%"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-500">
+                            <span>3kg lost</span>
+                            <span>2kg to go</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold">Bench Press 100kg</h3>
+                            <span class="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 px-2 py-1 rounded-full text-xs">In Progress</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Current max: 85kg</p>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Progress</span>
+                                <span>85%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-dark-border rounded-full h-2">
+                                <div class="bg-gym-orange h-2 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-500">
+                            <span>85kg current</span>
+                            <span>15kg to go</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold">5K in 20 minutes</h3>
+                            <span class="bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 px-2 py-1 rounded-full text-xs">Completed</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Personal best: 19:45</p>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Progress</span>
+                                <span>100%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-dark-border rounded-full h-2">
+                                <div class="bg-green-500 h-2 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-center">
+                            <span class="text-green-600 font-medium">🎉 Goal Achieved!</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold">30-Day Workout Streak</h3>
+                            <span class="bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200 px-2 py-1 rounded-full text-xs">In Progress</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Current streak: 12 days</p>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Progress</span>
+                                <span>40%</span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-dark-border rounded-full h-2">
+                                <div class="bg-purple-500 h-2 rounded-full" style="width: 40%"></div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between text-sm text-gray-500">
+                            <span>12 days</span>
+                            <span>18 days to go</span>
+                        </div>
+                    </div>
+
+                    <!-- Achievements -->
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <h3 class="text-lg font-semibold mb-4">Recent Achievements</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-gold-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-trophy text-yellow-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-sm">First 5K</p>
+                                    <p class="text-xs text-gray-500">Completed 5K run</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-silver-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-medal text-gray-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-sm">Consistency</p>
+                                    <p class="text-xs text-gray-500">7-day workout streak</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <div class="w-8 h-8 bg-bronze-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-star text-orange-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-sm">Strength Gain</p>
+                                    <p class="text-xs text-gray-500">Lifted 1000kg total</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Goal Categories -->
+                    <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                        <h3 class="text-lg font-semibold mb-4">Goal Categories</h3>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm">Weight Loss</span>
+                                <span class="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs">2 active</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm">Strength</span>
+                                <span class="bg-gym-orange/10 text-gym-orange px-2 py-1 rounded-full text-xs">3 active</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm">Endurance</span>
+                                <span class="bg-gym-green/10 text-gym-green px-2 py-1 rounded-full text-xs">1 completed</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-sm">Flexibility</span>
+                                <span class="bg-gym-blue/10 text-gym-blue px-2 py-1 rounded-full text-xs">1 active</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Section -->
+            <div id="profile-section" class="section hidden">
+                <h2 class="text-2xl font-bold mb-6">Profile Settings</h2>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Profile Info -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border mb-6">
+                            <h3 class="text-lg font-semibold mb-4">Personal Information</h3>
+                            <form onsubmit="updateProfile(event)">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">First Name</label>
+                                        <input type="text" value="Adarsh" 
+                                               class="w-full px-3 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Last Name</label>
+                                        <input type="text" value="Sekhar" 
+                                               class="w-full px-3 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Email</label>
+                                        <input type="email" value="Adarsh.Sekhar@example.com" 
+                                               class="w-full px-3 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Phone</label>
+                                        <input type="tel" value="+1 (555) 123-4567" 
+                                               class="w-full px-3 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Date of Birth</label>
+                                        <input type="date" value="1990-05-15" 
+                                               class="w-full px-3 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-2">Gender</label>
+                                        <select class="w-full px-3 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
+                                            <option value="male" selected>Male</option>
+                                            <option value="female">Female</option>
+                                            <option value="other">Other</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" class="mt-6 bg-primary hover:bg-primary-dark text-white py-2 px-6 rounded-lg transition-colors">
+                                    Update Profile
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Fitness Goals -->
+                        <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border mb-6">
+                            <h3 class="text-lg font-semibold mb-4">Fitness Preferences</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Primary Goal</label>
+                                    <select class="w-full px-3 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
+                                        <option value="weight-loss" selected>Weight Loss</option>
+                                        <option value="muscle-gain">Muscle Gain</option>
+                                        <option value="endurance">Endurance</option>
+                                        <option value="strength">Strength</option>
+                                        <option value="general-fitness">General Fitness</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Experience Level</label>
+                                    <select class="w-full px-3 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
+                                        <option value="beginner">Beginner</option>
+                                        <option value="intermediate" selected>Intermediate</option>
+                                        <option value="advanced">Advanced</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Preferred Workout Days</label>
+                                    <select class="w-full px-3 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
+                                        <option value="3">3 days/week</option>
+                                        <option value="4" selected>4 days/week</option>
+                                        <option value="5">5 days/week</option>
+                                        <option value="6">6 days/week</option>
+                                        <option value="7">7 days/week</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Session Duration</label>
+                                    <select class="w-full px-3 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
+                                        <option value="30">30 minutes</option>
+                                        <option value="45">45 minutes</option>
+                                        <option value="60" selected>60 minutes</option>
+                                        <option value="90">90 minutes</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notification Settings -->
+                        <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                            <h3 class="text-lg font-semibold mb-4">Notification Settings</h3>
+                            <div class="space-y-4">
+                                <label class="flex items-center justify-between">
+                                    <span>Workout reminders</span>
+                                    <input type="checkbox" checked class="toggle-switch">
+                                </label>
+                                <label class="flex items-center justify-between">
+                                    <span>Class booking confirmations</span>
+                                    <input type="checkbox" checked class="toggle-switch">
+                                </label>
+                                <label class="flex items-center justify-between">
+                                    <span>Progress updates</span>
+                                    <input type="checkbox" checked class="toggle-switch">
+                                </label>
+                                <label class="flex items-center justify-between">
+                                    <span>Promotional offers</span>
+                                    <input type="checkbox" class="toggle-switch">
+                                </label>
+                                <label class="flex items-center justify-between">
+                                    <span>Weekly summary</span>
+                                    <input type="checkbox" checked class="toggle-switch">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profile Picture & Stats -->
+                    <div class="space-y-6">
+                        <!-- Profile Picture -->
+                        <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                            <h3 class="text-lg font-semibold mb-4">Profile Picture</h3>
+                            <div class="text-center">
+                                <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face" 
+                                     alt="Profile" class="w-32 h-32 rounded-full mx-auto mb-4 object-cover">
+                                <button class="bg-gray-100 dark:bg-dark-border hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 py-2 px-4 rounded-lg transition-colors">
+                                    Change Photo
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Membership Status -->
+                        <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                            <h3 class="text-lg font-semibold mb-4">Membership Status</h3>
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-gradient-to-r from-primary to-gym-orange rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-crown text-white text-2xl"></i>
+                                </div>
+                                <h4 class="font-semibold text-lg">Premium Member</h4>
+                                <p class="text-gray-500 text-sm mb-4">Valid until March 15, 2024</p>
+                                <div class="space-y-2 text-sm">
+                                    <div class="flex justify-between">
+                                        <span>Classes attended</span>
+                                        <span class="font-medium">24</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Trainer sessions</span>
+                                        <span class="font-medium">8</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span>Member since</span>
+                                        <span class="font-medium">Jan 2023</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Stats -->
+                        <div class="bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border">
+                            <h3 class="text-lg font-semibold mb-4">Quick Stats</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-calendar text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">Check-ins</p>
+                                            <p class="text-sm text-gray-500">This month</p>
+                                        </div>
+                                    </div>
+                                    <span class="font-bold text-lg">24</span>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gym-orange/10 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-fire text-gym-orange"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">Streak</p>
+                                            <p class="text-sm text-gray-500">Current</p>
+                                        </div>
+                                    </div>
+                                    <span class="font-bold text-lg">12</span>
+                                </div>
+                                
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-gym-green/10 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-trophy text-gym-green"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-medium">Goals</p>
+                                            <p class="text-sm text-gray-500">Completed</p>
+                                        </div>
+                                    </div>
+                                    <span class="font-bold text-lg">3</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Booking Confirmation Modal -->
+    <div id="bookingModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white dark:bg-dark-card p-6 rounded-xl shadow-lg max-w-md w-full mx-4">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check text-green-600 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Booking Confirmed!</h3>
+                <p id="bookingMessage" class="text-gray-600 dark:text-gray-400 mb-6"></p>
+                <div id="bookingDetails" class="text-left bg-gray-50 dark:bg-dark-bg p-4 rounded-lg mb-6"></div>
+                <button onclick="closeBookingModal()" class="w-full bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-lg transition-colors">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Toast -->
+    <div id="successToast" class="fixed top-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg z-50 hidden animate-slide-up">
+        <div class="flex items-center space-x-3">
+            <i class="fas fa-check-circle"></i>
+            <span id="toastMessage">Success!</span>
+        </div>
+    </div>
+
+    <!-- Error Toast -->
+    <div id="errorToast" class="fixed top-4 right-4 bg-red-500 text-white p-4 rounded-lg shadow-lg z-50 hidden animate-slide-up">
+        <div class="flex items-center space-x-3">
+            <i class="fas fa-exclamation-circle"></i>
+            <span id="errorMessage">Error!</span>
+        </div>
+    </div>
+
+    <script>
+        // ===========================
+        // Configuration
+        // ===========================
+        const API_BASE_URL = 'http://localhost:8000'; // Change this to your backend URL
+        
+        // ===========================
+        // State Management
+        // ===========================
+        let currentSection = 'dashboard';
+        let gymData = {
+            classes: [],
+            trainers: [],
+            equipment: [],
+            memberships: [],
+            stats: {}
+        };
+
+        // ===========================
+        // Dark Mode Detection
+        // ===========================
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // ===========================
+        // Utility Functions
+        // ===========================
+        function showLoading() {
+            document.getElementById('loadingScreen').classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingScreen').classList.add('hidden');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById(type === 'success' ? 'successToast' : 'errorToast');
+            const messageElement = document.getElementById(type === 'success' ? 'toastMessage' : 'errorMessage');
+            messageElement.textContent = message;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        // ===========================
+        // API Functions
+        // ===========================
+        async function apiCall(endpoint, options = {}) {
+            try {
+                const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('API call failed:', error);
+                showToast(`API Error: ${error.message}`, 'error');
+                return null;
+            }
+        }
+
+        async function loadClasses(filters = {}) {
+            const loading = document.getElementById('classesLoading');
+            const grid = document.getElementById('classesGrid');
+            
+            loading.classList.remove('hidden');
+            
+            let queryParams = new URLSearchParams();
+            if (filters.difficulty) queryParams.append('difficulty', filters.difficulty);
+            if (filters.time_of_day) queryParams.append('time_of_day', filters.time_of_day);
+            
+            const data = await apiCall(`/api/classes?${queryParams.toString()}`);
+            loading.classList.add('hidden');
+            
+            if (data) {
+                gymData.classes = data.classes;
+                renderClasses(data.classes);
+            }
+        }
+
+        async function loadTrainers(filters = {}) {
+            const loading = document.getElementById('trainersLoading');
+            
+            loading.classList.remove('hidden');
+            
+            let queryParams = new URLSearchParams();
+            if (filters.specialty) queryParams.append('specialty', filters.specialty);
+            if (filters.available_only) queryParams.append('available_only', 'true');
+            queryParams.append('all', 'true'); // Get all trainers
+            
+            const data = await apiCall(`/api/trainers?${queryParams.toString()}`);
+            loading.classList.add('hidden');
+            
+            if (data) {
+                gymData.trainers = data.trainers;
+                renderTrainers(data.trainers);
+                
+                // Populate specialty filter
+                const specialtyFilter = document.getElementById('trainerSpecialtyFilter');
+                if (data.specialties && specialtyFilter.children.length === 1) {
+                    data.specialties.forEach(specialty => {
+                        const option = document.createElement('option');
+                        option.value = specialty;
+                        option.textContent = specialty;
+                        specialtyFilter.appendChild(option);
+                    });
+                }
+            }
+        }
+
+        async function loadEquipment(filters = {}) {
+            const loading = document.getElementById('equipmentLoading');
+            
+            loading.classList.remove('hidden');
+            
+            let queryParams = new URLSearchParams();
+            if (filters.category) queryParams.append('category', filters.category);
+            if (filters.status) queryParams.append('status', filters.status);
+            if (filters.available_only) queryParams.append('available_only', 'true');
+            
+            const data = await apiCall(`/api/equipment?${queryParams.toString()}`);
+            loading.classList.add('hidden');
+            
+            if (data) {
+                gymData.equipment = data.equipment;
+                renderEquipment(data.equipment);
+            }
+        }
+
+        async function loadMemberships() {
+            const loading = document.getElementById('membershipsLoading');
+            
+            loading.classList.remove('hidden');
+            
+            const data = await apiCall('/api/memberships');
+            loading.classList.add('hidden');
+            
+            if (data) {
+                gymData.memberships = data.memberships;
+                renderMemberships(data.memberships);
+            }
+        }
+
+        async function loadStats() {
+            const data = await apiCall('/api/stats');
+            if (data) {
+                gymData.stats = data;
+            }
+        }
+
+        async function loadTodaySchedule() {
+            const data = await apiCall('/api/schedule');
+            if (data) {
+                renderTodaySchedule(data);
+            }
+        }
+
+        async function performSearch(query) {
+            if (query.length < 2) {
+                document.getElementById('searchResults').classList.add('hidden');
+                return;
+            }
+
+            const data = await apiCall('/api/search', {
+                method: 'POST',
+                body: JSON.stringify({ query, category: '' })
+            });
+
+            if (data) {
+                renderSearchResults(data.results);
+            }
+        }
+
+        // ===========================
+        // Booking Functions
+        // ===========================
+        async function bookClass(classId) {
+            showLoading();
+            const data = await apiCall(`/api/book-class/${classId}`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    user_name: "AdarshSekhar",
+                    user_email: "Adarsh.Sekhar@example.com",
+                    user_phone: "+1 (555) 123-4567"
+                })
+            });
+            hideLoading();
+
+            if (data) {
+                showBookingModal(data);
+                showToast('Class booked successfully!');
+                // Refresh classes to update available spots
+                loadClasses();
+            }
+        }
+
+        async function bookTrainer(trainerId) {
+            showLoading();
+            const data = await apiCall(`/api/book-trainer/${trainerId}`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    user_name: "AdarshSekhar",
+                    user_email: "Adarsh.Sekhar@example.com",
+                    user_phone: "+1 (555) 123-4567"
+                })
+            });
+            hideLoading();
+
+            if (data) {
+                showBookingModal(data);
+                showToast('Trainer session booked successfully!');
+                // Refresh trainers to update available slots
+                loadTrainers();
+            }
+        }
+
+        async function reserveEquipment(equipmentId) {
+            showLoading();
+            const data = await apiCall(`/api/reserve-equipment/${equipmentId}`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    user_name: "AdarshSekhar",
+                    user_email: "Adarsh.Sekhar@example.com",
+                    user_phone: "+1 (555) 123-4567"
+                })
+            });
+            hideLoading();
+
+            if (data) {
+                showBookingModal(data);
+                showToast('Equipment reserved successfully!');
+                // Refresh equipment to update available slots
+                loadEquipment();
+            }
+        }
+
+        async function subscribeToPlan(planId) {
+            showLoading();
+            const data = await apiCall(`/api/subscribe/${planId}`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    user_name: "AdarshSekhar",
+                    user_email: "Adarsh.Sekhar@example.com",
+                    user_phone: "+1 (555) 123-4567"
+                })
+            });
+            hideLoading();
+
+            if (data) {
+                showBookingModal(data);
+                showToast('Membership subscription successful!');
+            }
+        }
+
+        // ===========================
+        // Rendering Functions
+        // ===========================
+        function renderClasses(classes) {
+            const grid = document.getElementById('classesGrid');
+            grid.innerHTML = '';
+
+            classes.forEach(cls => {
+                const classCard = document.createElement('div');
+                classCard.className = 'bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border hover:shadow-lg transition-shadow';
+                
+                const difficultyColor = {
+                    'Beginner': 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200',
+                    'Intermediate': 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200',
+                    'Advanced': 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200'
+                };
+
+                classCard.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="text-lg font-semibold">${cls.name}</h3>
+                        <span class="px-2 py-1 rounded-full text-xs ${difficultyColor[cls.difficulty] || 'bg-gray-100 text-gray-800'}">${cls.difficulty}</span>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">${cls.description}</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-user-tie w-4 mr-2"></i>
+                            <span>${cls.instructor}</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-clock w-4 mr-2"></i>
+                            <span>${cls.time} • ${cls.duration}</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-map-marker-alt w-4 mr-2"></i>
+                            <span>${cls.location}</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-users w-4 mr-2"></i>
+                            <span>${cls.available_spots} spots available</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-xl font-bold text-primary">$${cls.price}</span>
+                        <button onclick="bookClass(${cls.id})" 
+                                class="bg-primary hover:bg-primary-dark text-white py-2 px-4 rounded-lg transition-colors ${cls.available_spots === 0 ? 'opacity-50 cursor-not-allowed' : ''}"
+                                ${cls.available_spots === 0 ? 'disabled' : ''}>
+                            ${cls.available_spots === 0 ? 'Full' : 'Book Now'}
+                        </button>
+                    </div>
+                    ${cls.benefits ? `
+                        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-dark-border">
+                            <h4 class="text-sm font-medium mb-2">Benefits:</h4>
+                            <ul class="text-xs text-gray-600 dark:text-gray-400 space-y-1">
+                                ${cls.benefits.map(benefit => `<li>• ${benefit}</li>`).join('')}
+                            </ul>
+                        </div>
+                    ` : ''}
+                `;
+                
+                grid.appendChild(classCard);
+            });
+        }
+
+        function renderTrainers(trainers) {
+            const grid = document.getElementById('trainersGrid');
+            grid.innerHTML = '';
+
+            trainers.forEach(trainer => {
+                const trainerCard = document.createElement('div');
+                trainerCard.className = 'bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border hover:shadow-lg transition-shadow';
+                
+                trainerCard.innerHTML = `
+                    <div class="text-center mb-4">
+                        <img src="${trainer.image}" alt="${trainer.name}" 
+                             class="w-20 h-20 rounded-full mx-auto mb-3 object-cover">
+                        <h3 class="text-lg font-semibold">${trainer.name}</h3>
+                        <p class="text-primary font-medium">${trainer.specialty}</p>
+                    </div>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-star w-4 mr-2 text-yellow-500"></i>
+                            <span>${trainer.rating}/5 (${trainer.experience})</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-dollar-sign w-4 mr-2"></i>
+                            <span>$${trainer.hourly_rate}/hour</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-clock w-4 mr-2"></i>
+                            <span>${trainer.available_slots.length} slots available</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">${trainer.bio}</p>
+                    <div class="mb-4">
+                        <h4 class="text-sm font-medium mb-2">Certifications:</h4>
+                        <div class="flex flex-wrap gap-1">
+                            ${trainer.certifications.map(cert => 
+                                `<span class="bg-gray-100 dark:bg-dark-border text-gray-700 dark:text-gray-300 px-2 py-1 rounded-full text-xs">${cert}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                    <button onclick="bookTrainer(${trainer.id})" 
+                            class="w-full bg-gym-orange hover:bg-gym-orange/80 text-white py-2 px-4 rounded-lg transition-colors ${trainer.available_slots.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}"
+                            ${trainer.available_slots.length === 0 ? 'disabled' : ''}>
+                        ${trainer.available_slots.length === 0 ? 'No Slots Available' : 'Book Session'}
+                    </button>
+                `;
+                
+                grid.appendChild(trainerCard);
+            });
+        }
+
+        function renderEquipment(equipment) {
+            const grid = document.getElementById('equipmentGrid');
+            grid.innerHTML = '';
+
+            equipment.forEach(item => {
+                const equipmentCard = document.createElement('div');
+                equipmentCard.className = 'bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border border-gray-200 dark:border-dark-border hover:shadow-lg transition-shadow';
+                
+                const statusColor = {
+                    'Available': 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200',
+                    'In Use': 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200',
+                    'Maintenance': 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200'
+                };
+
+                const categoryIcon = {
+                    'cardio': 'fas fa-heartbeat',
+                    'strength': 'fas fa-dumbbell',
+                    'functional': 'fas fa-running'
+                };
+
+                equipmentCard.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                                <i class="${categoryIcon[item.category] || 'fas fa-dumbbell'} text-primary"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-semibold">${item.name}</h3>
+                                <p class="text-sm text-gray-500 capitalize">${item.category}</p>
+                            </div>
+                        </div>
+                        <span class="px-2 py-1 rounded-full text-xs ${statusColor[item.status]}">${item.status}</span>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">${item.description}</p>
+                    <div class="space-y-2 mb-4">
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-map-marker-alt w-4 mr-2"></i>
+                            <span>${item.location}</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-users w-4 mr-2"></i>
+                            <span>${item.available_slots}/${item.capacity} available</span>
+                        </div>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <i class="fas fa-tag w-4 mr-2"></i>
+                            <span>${item.brand} ${item.model}</span>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <h4 class="text-sm font-medium mb-2">Instructions:</h4>
+                        <p class="text-xs text-gray-600 dark:text-gray-400">${item.instructions}</p>
+                    </div>
+                    <button onclick="reserveEquipment(${item.id})" 
+                            class="w-full bg-gym-green hover:bg-gym-green/80 text-white py-2 px-4 rounded-lg transition-colors ${item.status !== 'Available' || item.available_slots === 0 ? 'opacity-50 cursor-not-allowed' : ''}"
+                            ${item.status !== 'Available' || item.available_slots === 0 ? 'disabled' : ''}>
+                        ${item.status !== 'Available' ? item.status : item.available_slots === 0 ? 'Fully Reserved' : 'Reserve Equipment'}
+                    </button>
+                `;
+                
+                grid.appendChild(equipmentCard);
+            });
+        }
+
+        function renderMemberships(memberships) {
+            const grid = document.getElementById('membershipsGrid');
+            grid.innerHTML = '';
+
+            memberships.forEach(membership => {
+                const membershipCard = document.createElement('div');
+                const isPopular = membership.popular;
+                
+                membershipCard.className = `bg-white dark:bg-dark-card rounded-xl p-6 shadow-sm border ${isPopular ? 'border-primary ring-2 ring-primary/20' : 'border-gray-200 dark:border-dark-border'} hover:shadow-lg transition-shadow relative`;
+                
+                membershipCard.innerHTML = `
+                    ${isPopular ? '<div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary text-white px-4 py-1 rounded-full text-sm font-medium">Most Popular</div>' : ''}
+                    <div class="text-center mb-6">
+                        <h3 class="text-xl font-bold mb-2">${membership.name}</h3>
+                        <div class="text-3xl font-bold mb-1">
+                            <span class="text-primary">$${membership.price}</span>
+                            <span class="text-base font-normal text-gray-500">/${membership.duration.toLowerCase()}</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm">${membership.description}</p>
+                    </div>
+                    <ul class="space-y-3 mb-6">
+                        ${membership.features.map(feature => 
+                            `<li class="flex items-center text-sm">
+                                <i class="fas fa-check text-green-500 w-4 mr-3"></i>
+                                <span>${feature}</span>
+                            </li>`
+                        ).join('')}
+                    </ul>
+                    <button onclick="subscribeToPlan(${membership.id})" 
+                            class="w-full ${isPopular ? 'bg-primary hover:bg-primary-dark' : 'bg-gray-600 hover:bg-gray-700'} text-white py-3 px-4 rounded-lg transition-colors font-medium">
+                        Choose ${membership.name}
+                    </button>
+                    ${membership.max_guests > 0 ? `
+                        <div class="mt-4 pt-4 border-t border-gray-200 dark:border-dark-border">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600 dark:text-gray-400">Guest passes/month:</span>
+                                <span class="font-medium">${membership.max_guests === 999 ? 'Unlimited' : membership.max_guests}</span>
+                            </div>
+                            ${membership.personal_training_sessions > 0 ? `
+                                <div class="flex justify-between text-sm mt-1">
+                                    <span class="text-gray-600 dark:text-gray-400">PT sessions/month:</span>
+                                    <span class="font-medium">${membership.personal_training_sessions === 999 ? 'Unlimited' : membership.personal_training_sessions}</span>
+                                </div>
+                            ` : ''}
+                        </div>
+                    ` : ''}
+                `;
+                
+                grid.appendChild(membershipCard);
+            });
+        }
+
+        function renderTodaySchedule(scheduleData) {
+            const container = document.getElementById('todaySchedule');
+            if (!scheduleData || !scheduleData.classes) return;
+
+            container.innerHTML = '';
+            
+            // Show first 4 classes for today
+            scheduleData.classes.slice(0, 4).forEach(cls => {
+                const scheduleItem = document.createElement('div');
+                scheduleItem.className = 'flex items-center justify-between p-3 bg-gray-50 dark:bg-dark-bg rounded-lg';
+                
+                scheduleItem.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-dumbbell text-primary"></i>
+                        </div>
+                        <div>
+                            <p class="font-medium">${cls.name}</p>
+                            <p class="text-sm text-gray-500">${cls.instructor} • ${cls.location}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-medium">${cls.time}</p>
+                        <p class="text-sm text-gray-500">${cls.available_spots} spots</p>
+                    </div>
+                `;
+                
+                container.appendChild(scheduleItem);
+            });
+
+            if (scheduleData.classes.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 text-center py-4">No classes scheduled for today</p>';
+            }
+        }
+
+        function renderSearchResults(results) {
+            const container = document.getElementById('searchResults');
+            
+            if (!results || results.length === 0) {
+                container.classList.add('hidden');
+                return;
+            }
+
+            container.innerHTML = '';
+            container.classList.remove('hidden');
+
+            results.slice(0, 5).forEach(result => {
+                const resultItem = document.createElement('div');
+                resultItem.className = 'p-3 hover:bg-gray-50 dark:hover:bg-dark-border cursor-pointer border-b border-gray-100 dark:border-dark-border last:border-b-0';
+                
+                const typeIcon = {
+                    'class': 'fas fa-calendar-alt',
+                    'trainer': 'fas fa-user-tie',
+                    'equipment': 'fas fa-dumbbell'
+                };
+                
+                resultItem.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <i class="${typeIcon[result.type]} text-primary"></i>
+                        <div>
+                            <p class="font-medium">${result.name}</p>
+                            <p class="text-sm text-gray-500">${result.type === 'class' ? result.instructor : result.type === 'trainer' ? result.specialty : result.category}</p>
+                        </div>
+                    </div>
+                `;
+                
+                resultItem.onclick = () => {
+                    showSection(result.type === 'class' ? 'classes' : result.type === 'trainer' ? 'trainers' : 'equipment');
+                    container.classList.add('hidden');
+                    document.getElementById('globalSearch').value = '';
+                };
+                
+                container.appendChild(resultItem);
+            });
+        }
+
+        // ===========================
+        // Modal Functions
+        // ===========================
+        function showBookingModal(bookingData) {
+            const modal = document.getElementById('bookingModal');
+            const message = document.getElementById('bookingMessage');
+            const details = document.getElementById('bookingDetails');
+            
+            message.textContent = bookingData.message;
+            
+            // Format booking details
+            const detailsHTML = Object.entries(bookingData)
+                .filter(([key, value]) => !['message', 'customer_info'].includes(key))
+                .map(([key, value]) => {
+                    const label = key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                    return `<div class="flex justify-between"><span class="text-gray-600 dark:text-gray-400">${label}:</span><span class="font-medium">${value}</span></div>`;
+                })
+                .join('');
+            
+            details.innerHTML = detailsHTML;
+            modal.classList.remove('hidden');
+        }
+
+        function closeBookingModal() {
+            document.getElementById('bookingModal').classList.add('hidden');
+        }
+
+        // ===========================
+        // Section Navigation
+        // ===========================
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show selected section
+            document.getElementById(`${sectionName}-section`).classList.remove('hidden');
+            
+            // Update page title
+            const titles = {
+                'dashboard': 'Dashboard',
+                'classes': 'Fitness Classes',
+                'trainers': 'Personal Trainers',
+                'equipment': 'Gym Equipment',
+                'membership': 'Memberships',
+                'nutrition': 'Nutrition Tracking',
+                'progress': 'Progress Tracking',
+                'goals': 'Fitness Goals',
+                'profile': 'Profile Settings'
+            };
+            
+            document.getElementById('pageTitle').textContent = titles[sectionName] || 'AdarshFitness';
+            
+            // Update active nav item
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active', 'bg-primary', 'text-white');
+                item.classList.add('text-gray-700', 'dark:text-gray-300');
+            });
+            
+            const activeNavItem = document.querySelector(`[onclick="showSection('${sectionName}')"]`);
+            if (activeNavItem) {
+                activeNavItem.classList.add('active', 'bg-primary', 'text-white');
+                activeNavItem.classList.remove('text-gray-700', 'dark:text-gray-300');
+            }
+            
+            currentSection = sectionName;
+            
+            // Load section-specific data
+            if (sectionName === 'classes') {
+                loadClasses();
+            } else if (sectionName === 'trainers') {
+                loadTrainers();
+            } else if (sectionName === 'equipment') {
+                loadEquipment();
+            } else if (sectionName === 'membership') {
+                loadMemberships();
+            } else if (sectionName === 'progress') {
+                initializeCharts();
+            }
+
+            // Close mobile menu
+            closeMobileMenu();
+        }
+
+        // ===========================
+        // Mobile Menu
+        // ===========================
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('sidebar-hidden');
+        }
+
+        function closeMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.add('sidebar-hidden');
+        }
+
+        // ===========================
+        // Form Handlers
+        // ===========================
+        function addMeal(event) {
+            event.preventDefault();
+            const mealType = document.getElementById('mealType').value;
+            const foodItem = document.getElementById('foodItem').value;
+            const calories = document.getElementById('calories').value;
+            
+            if (!foodItem || !calories) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+            
+            // Add meal to log (in a real app, this would call the API)
+            showToast('Meal added successfully!');
+            
+            // Reset form
+            document.getElementById('foodItem').value = '';
+            document.getElementById('calories').value = '';
+        }
+
+        function addWater() {
+            showToast('250ml water added!');
+            // Update water progress (in a real app, this would update the state)
+        }
+
+        function updateProfile(event) {
+            event.preventDefault();
+            showToast('Profile updated successfully!');
+        }
+
+        function showAddMeasurement() {
+            showToast('Measurement form would open here');
+        }
+
+        function showAddRecord() {
+            showToast('Personal record form would open here');
+        }
+
+        function showAddGoal() {
+            showToast('Add goal form would open here');
+        }
+
+        // ===========================
+        // Charts Initialization
+        // ===========================
+        function initializeCharts() {
+            // Weight Progress Chart
+            const weightCtx = document.getElementById('weightChart');
+            if (weightCtx && !weightCtx.chart) {
+                weightCtx.chart = new Chart(weightCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'Weight (kg)',
+                            data: [75, 74.5, 74, 73.5, 73, 72.5],
+                            borderColor: '#5D5CDE',
+                            backgroundColor: 'rgba(93, 92, 222, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                grid: {
+                                    color: 'rgba(156, 163, 175, 0.1)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(156, 163, 175, 0.1)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Workout Frequency Chart
+            const workoutCtx = document.getElementById('workoutChart');
+            if (workoutCtx && !workoutCtx.chart) {
+                workoutCtx.chart = new Chart(workoutCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            label: 'Workouts',
+                            data: [1, 0, 1, 1, 1, 0, 1],
+                            backgroundColor: '#FF6B35',
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 2,
+                                grid: {
+                                    color: 'rgba(156, 163, 175, 0.1)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(156, 163, 175, 0.1)'
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        // ===========================
+        // Filter Handlers
+        // ===========================
+        function setupFilters() {
+            // Class filters
+            document.getElementById('classFilter').addEventListener('change', (e) => {
+                loadClasses({ difficulty: e.target.value });
+            });
+
+            document.getElementById('timeFilter').addEventListener('change', (e) => {
+                loadClasses({ time_of_day: e.target.value });
+            });
+
+            // Trainer filters
+            document.getElementById('trainerSpecialtyFilter').addEventListener('change', (e) => {
+                loadTrainers({ specialty: e.target.value });
+            });
+
+            document.getElementById('availableOnlyFilter').addEventListener('change', (e) => {
+                loadTrainers({ available_only: e.target.checked });
+            });
+
+            // Equipment filters
+            document.getElementById('equipmentCategoryFilter').addEventListener('change', (e) => {
+                loadEquipment({ category: e.target.value });
+            });
+
+            document.getElementById('equipmentStatusFilter').addEventListener('change', (e) => {
+                loadEquipment({ status: e.target.value });
+            });
+        }
+
+        // ===========================
+        // Search Handler
+        // ===========================
+        function setupSearch() {
+            const searchInput = document.getElementById('globalSearch');
+            let searchTimeout;
+
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    performSearch(e.target.value);
+                }, 300);
+            });
+
+            searchInput.addEventListener('blur', () => {
+                setTimeout(() => {
+                    document.getElementById('searchResults').classList.add('hidden');
+                }, 200);
+            });
+        }
+
+        // ===========================
+        // Time Display
+        // ===========================
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: true 
+            });
+            const dateString = now.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            document.getElementById('currentTime').textContent = `${dateString} • ${timeString}`;
+        }
+
+        // ===========================
+        // Initialization
+        // ===========================
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('AdarshFitness App Initializing...');
+            
+            // Setup mobile menu
+            document.getElementById('mobileMenuBtn').addEventListener('click', toggleMobileMenu);
+            
+            // Setup filters and search
+            setupFilters();
+            setupSearch();
+            
+            // Update time
+            updateTime();
+            setInterval(updateTime, 60000); // Update every minute
+            
+            // Load initial data
+            showLoading();
+            
+            try {
+                await Promise.all([
+                    loadStats(),
+                    loadTodaySchedule(),
+                    loadClasses() // Pre-load classes for quick access
+                ]);
+                
+                console.log('Data loaded successfully');
+                showToast('Welcome to AdarshFitness!');
+            } catch (error) {
+                console.error('Failed to load initial data:', error);
+                showToast('Failed to connect to server. Using offline mode.', 'error');
+                
+                // Set some mock data for offline mode
+                gymData.classes = [
+                    {
+                        id: 1,
+                        name: "HIIT Inferno",
+                        instructor: "Sarah Adarshson",
+                        time: "6:00 AM",
+                        duration: "45 min",
+                        difficulty: "Advanced",
+                        price: 35,
+                        available_spots: 15,
+                        location: "Studio A",
+                        description: "High-intensity interval training that will push your limits"
+                    }
+                ];
+            } finally {
+                hideLoading();
+            }
+            
+            // Show dashboard by default
+            showSection('dashboard');
+            
+            console.log('AdarshFitness App Ready!');
+        });
+
+        // ===========================
+        // Offline Click Handlers for Mock Data
+        // ===========================
+        window.addEventListener('click', (e) => {
+            // Handle clicks outside search results
+            if (!e.target.closest('#globalSearch') && !e.target.closest('#searchResults')) {
+                document.getElementById('searchResults').classList.add('hidden');
+            }
+            
+            // Handle clicks outside sidebar for mobile
+            if (window.innerWidth < 768 && !e.target.closest('#sidebar') && !e.target.closest('#mobileMenuBtn')) {
+                closeMobileMenu();
+            }
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('bookingModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                closeBookingModal();
+            }
+        });
+    </script>
+</body>
+</html>
