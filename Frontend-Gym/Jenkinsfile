@@ -1,0 +1,26 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Code Checkout') {
+            steps {
+                git url: 'https://github.com/rajasekharsepenta/GYM-CODE-LTS.git', branch: 'main'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                dir('Frontend-Gym') {
+                    sh 'sudo cp index.html /var/www/html/index.html'
+                }
+            }
+        }
+
+        stage('Restart Nginx') {
+            steps {
+                sh 'sudo systemctl restart nginx'
+            }
+        }
+    }
+}
