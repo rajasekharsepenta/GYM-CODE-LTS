@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaiFitness - Premium Gym Management</title>
+    <title>SekharFitness - Premium Gym Management</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -79,7 +79,7 @@
     <div id="loadingScreen" class="fixed inset-0 bg-white dark:bg-dark-bg flex items-center justify-center z-50">
         <div class="text-center">
             <div class="loader mx-auto mb-4"></div>
-            <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-300">Loading SaiFitness...</h2>
+            <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-300">Loading SekharFitness...</h2>
         </div>
     </div>
 
@@ -91,7 +91,7 @@
                     <i class="fas fa-dumbbell text-white"></i>
                 </div>
                 <div>
-                    <h1 class="text-xl font-bold">SaiFitness</h1>
+                    <h1 class="text-xl font-bold">SekharFitness</h1>
                     <p class="text-sm text-gray-500 dark:text-gray-400">Premium Gym</p>
                 </div>
             </div>
@@ -168,7 +168,7 @@
                     <div class="flex items-center space-x-3">
                         <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face" 
                              alt="Profile" class="w-8 h-8 rounded-full">
-                        <span class="hidden md:block font-medium">SaiSekhar</span>
+                        <span class="hidden md:block font-medium">SekharSekhar</span>
                     </div>
                 </div>
             </div>
@@ -291,7 +291,7 @@
                                 <i class="fas fa-calendar text-blue-600"></i>
                             </div>
                             <div class="flex-1">
-                                <p class="font-medium">Booked session with Sarah Saison</p>
+                                <p class="font-medium">Booked session with Sarah Sekharson</p>
                                 <p class="text-sm text-gray-500">Yesterday • Tomorrow at 3:00 PM</p>
                             </div>
                         </div>
@@ -395,7 +395,7 @@
                 <div class="mb-8 text-center">
                     <h2 class="text-3xl font-bold mb-4">Choose Your Membership</h2>
                     <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-                        Join SaiFitness and transform your body with our premium facilities and expert guidance
+                        Join SekharFitness and transform your body with our premium facilities and expert guidance
                     </p>
                 </div>
 
@@ -851,7 +851,7 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
                                         <label class="block text-sm font-medium mb-2">First Name</label>
-                                        <input type="text" value="Sai" 
+                                        <input type="text" value="Sekhar" 
                                                class="w-full px-3 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
                                     </div>
                                     <div>
@@ -861,7 +861,7 @@
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium mb-2">Email</label>
-                                        <input type="email" value="Sai.Sekhar@example.com" 
+                                        <input type="email" value="Sekhar.Sekhar@example.com" 
                                                class="w-full px-3 py-2 text-base border border-gray-300 dark:border-dark-border rounded-lg bg-white dark:bg-dark-bg">
                                     </div>
                                     <div>
@@ -1283,8 +1283,8 @@
             const data = await apiCall(`/api/book-class/${classId}`, {
                 method: 'POST',
                 body: JSON.stringify({
-                    user_name: "SaiSekhar",
-                    user_email: "Sai.Sekhar@example.com",
+                    user_name: "SekharSekhar",
+                    user_email: "Sekhar.Sekhar@example.com",
                     user_phone: "+1 (555) 123-4567"
                 })
             });
@@ -1303,8 +1303,8 @@
             const data = await apiCall(`/api/book-trainer/${trainerId}`, {
                 method: 'POST',
                 body: JSON.stringify({
-                    user_name: "SaiSekhar",
-                    user_email: "Sai.Sekhar@example.com",
+                    user_name: "SekharSekhar",
+                    user_email: "Sekhar.Sekhar@example.com",
                     user_phone: "+1 (555) 123-4567"
                 })
             });
@@ -1323,8 +1323,8 @@
             const data = await apiCall(`/api/reserve-equipment/${equipmentId}`, {
                 method: 'POST',
                 body: JSON.stringify({
-                    user_name: "SaiSekhar",
-                    user_email: "Sai.Sekhar@example.com",
+                    user_name: "SekharSekhar",
+                    user_email: "Sekhar.Sekhar@example.com",
                     user_phone: "+1 (555) 123-4567"
                 })
             });
@@ -1343,8 +1343,8 @@
             const data = await apiCall(`/api/subscribe/${planId}`, {
                 method: 'POST',
                 body: JSON.stringify({
-                    user_name: "SaiSekhar",
-                    user_email: "Sai.Sekhar@example.com",
+                    user_name: "SekharSekhar",
+                    user_email: "Sekhar.Sekhar@example.com",
                     user_phone: "+1 (555) 123-4567"
                 })
             });
@@ -1711,7 +1711,7 @@
                 'profile': 'Profile Settings'
             };
             
-            document.getElementById('pageTitle').textContent = titles[sectionName] || 'SaiFitness';
+            document.getElementById('pageTitle').textContent = titles[sectionName] || 'SekharFitness';
             
             // Update active nav item
             document.querySelectorAll('.nav-item').forEach(item => {
@@ -1964,7 +1964,7 @@
         // Initialization
         // ===========================
         document.addEventListener('DOMContentLoaded', async function() {
-            console.log('SaiFitness App Initializing...');
+            console.log('SekharFitness App Initializing...');
             
             // Setup mobile menu
             document.getElementById('mobileMenuBtn').addEventListener('click', toggleMobileMenu);
@@ -1988,7 +1988,7 @@
                 ]);
                 
                 console.log('Data loaded successfully');
-                showToast('Welcome to SaiFitness!');
+                showToast('Welcome to SekharFitness!');
             } catch (error) {
                 console.error('Failed to load initial data:', error);
                 showToast('Failed to connect to server. Using offline mode.', 'error');
@@ -1998,7 +1998,7 @@
                     {
                         id: 1,
                         name: "HIIT Inferno",
-                        instructor: "Sarah Saison",
+                        instructor: "Sarah Sekharson",
                         time: "6:00 AM",
                         duration: "45 min",
                         difficulty: "Advanced",
@@ -2015,7 +2015,7 @@
             // Show dashboard by default
             showSection('dashboard');
             
-            console.log('SaiFitness App Ready!');
+            console.log('SekharFitness App Ready!');
         });
 
         // ===========================
